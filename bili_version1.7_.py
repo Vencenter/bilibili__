@@ -345,6 +345,10 @@ class bilibili_(QWidget):
         if str(self.down_address.text())=="" or str(self.save_address.text())=="":
             QMessageBox.information(self,u"提示", u"请输入网址和下载地址，视频名称可不写")
             return
+        
+        if "av" not in str(self.down_address.text()):
+            QMessageBox.information(self,u"提示", u"请先解析！")
+            return
 
         url=str(self.down_address.text())
         title= str(self.file_name.text())
