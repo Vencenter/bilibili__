@@ -1,4 +1,5 @@
-#-*- coding:utf-8 -*-
+#!/usr/bin/env Python
+#-*- coding:utf-8-*-
 #*******************************************************************
 #*******************************************************************
 #*************************导入模块***********************************
@@ -222,7 +223,7 @@ class bilibili_(QWidget):
         
         
         down_address=QLabel(u'输入下载地址：')
-        self.down_address=QLineEdit()
+        self.down_address=QLineEdit("https://www.bilibili.com/video/av84563885")
         analyze=QPushButton(u"解析")
 
         
@@ -331,16 +332,18 @@ class bilibili_(QWidget):
                  
                            
             self.pbar.setValue(100)
-            self.start_down.setEnabled(True)
+            
        
         except Exception as e:
                 print e
+
+        self.start_down.setEnabled(True)
 
         
 
     def startDownload(self):
 
-        quality=720
+        quality=1080
         
         if str(self.down_address.text())=="" or str(self.save_address.text())=="":
             QMessageBox.information(self,u"提示", u"请输入网址和下载地址，视频名称可不写")
@@ -362,6 +365,8 @@ class bilibili_(QWidget):
         #print aid
 
         use_url = 'https://api.bilibili.com/x/web-interface/view?aid=%s' % (aid,)
+        print use_url
+        
         urllib3.disable_warnings() 
         response = requests.get(use_url, headers=headers, verify=False) 
         content = json.loads(response.text)
@@ -371,11 +376,10 @@ class bilibili_(QWidget):
         #print cid
 
         url_api = 'https://api.bilibili.com/x/player/playurl?cid={}&avid={}&qn={}'.format(cid, aid, quality)
-        #print url_api 
+        print url_api
+        
         htmls = requests.get(url_api, headers=headers).json()
 
-       
-        
 
         headerss={"User-Agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36","Referer":"https://www.bilibili.com/video/"+aid}
         
@@ -383,9 +387,19 @@ class bilibili_(QWidget):
         #print video_address
 
         downpos=str(self.save_address.text()).decode('utf-8')
+
+        
         rstr = r"[\/\\\:\*\?\"\<\>\|♪]"  
-        new_title = re.sub(rstr, "", title)  
-        new_name=downpos+"/" + new_title+".flv"
+        new_title = re.sub(rstr,"", title)
+
+        #print new_title.decode('utf-8')
+
+        new_name=downpos+"/" + new_title.decode('utf-8',"ignore")+".flv"
+
+        #with open("text.txt","w") as f:
+            #f.write(use_url+"\n")
+            #f.write(url_api+"\n")
+        
 
         self.hide()
         
